@@ -50,8 +50,8 @@ public class p7mx {
             catch (CMSException e) {
             }
             catch (Exception e) { // Altre eccezioni fanno scartare il file
-                System.out.println("Errore leggendo " + arg);
-                e.printStackTrace();
+                System.out.println(e.toString() + " - Errore leggendo " + arg);
+                //~ e.printStackTrace();
                 continue;
             }
         
@@ -69,7 +69,7 @@ public class p7mx {
         
             try { // Finalmente, prova a decodificare il PDF da Base64 e lo salva nella posizione di origine
                 byte[] pdf = Base64.getMimeDecoder().decode(s.getBytes());
-                String new_name = arg.replaceAll("(?i)xml.p7m", "pdf");
+                String new_name = arg.replaceAll("(?i)xml(.p7m)?", "pdf");
                 System.out.println("Salvo la fattura PDF: " + new_name);
                 Files.write(Paths.get(new_name), pdf);
             }
