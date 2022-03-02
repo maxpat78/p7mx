@@ -56,8 +56,8 @@ public class p7mx {
             }
         
             // Cerca l'Attachment: a questo punto, dovremmo avere un XML valido
-            Pattern p = Pattern.compile("<Attachment>(.+)</Attachment>", Pattern.MULTILINE | Pattern.DOTALL);
-            Matcher m = p.matcher(s);
+            Matcher m = Pattern.compile("<Attachment>(.+)</Attachment>",
+            Pattern.MULTILINE|Pattern.DOTALL).matcher(s);
             if (m.find()) {
                 s = m.group(1); // rimpiazza il P7M con il PDF
             } 
@@ -69,6 +69,10 @@ public class p7mx {
         
             try { // Finalmente, prova a decodificare il PDF da Base64 e lo salva nella posizione di origine
                 byte[] pdf = Base64.getMimeDecoder().decode(s.getBytes());
+                if (pdf.length < 4 || (pdf[0] != '%' || pdf[1] != 'P' || pdf[2] != 'D' || pdf[3] != 'F')) {
+                    System.out.println(arg + " non contiene una fattura PDF");
+                    continue;
+                }
                 String new_name = arg.replaceAll("(?i)xml(.p7m)?", "pdf");
                 System.out.println("Salvo la fattura PDF: " + new_name);
                 Files.write(Paths.get(new_name), pdf);
